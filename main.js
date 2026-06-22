@@ -6,18 +6,19 @@ const lowercaseEl = document.getElementById('lowercase');
 const numbersEl = document.getElementById('numbers');
 const symbolsEl = document.getElementById('symbols');
 const generateBtn = document.getElementById('generate-btn');
+const copyBtn = document.getElementById('copy');
 
 const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
 const numberChars = '0123456789';
 const symbolChars = '!@#$%^&*()_+~`|}{[]:;?><,./-=';
 
-// Atualiza o número do comprimento na tela quando arrasta o slider
+// Atualiza o valor numérico do comprimento na tela
 lengthEl.addEventListener('input', (e) => {
     lengthValEl.innerText = e.target.value;
 });
 
-// Função principal para gerar a senha
+// Função para gerar a senha segura
 function generatePassword() {
     let allowedChars = '';
     let password = '';
@@ -30,10 +31,11 @@ function generatePassword() {
     const length = parseInt(lengthEl.value);
 
     if (allowedChars.length === 0) {
-        passwordEl.value = 'Selecione pelo menos uma opção!';
+        passwordEl.value = 'Selecione uma opção!';
         return;
     }
 
+    // Gerando a senha com base nas opções e comprimento selecionados
     for (let i = 0; i < length; i++) {
         const randomIndex = Math.floor(Math.random() * allowedChars.length);
         password += allowedChars[randomIndex];
@@ -42,5 +44,28 @@ function generatePassword() {
     passwordEl.value = password;
 }
 
-// Evento do botão
+// Função inovadora para copiar a senha para a área de transferência
+copyBtn.addEventListener('click', () => {
+    const password = passwordEl.value;
+
+    if (!password || password === 'Selecione uma opção!') {
+        return;
+    }
+
+    // Copiando para a área de transferência usando a Clipboard API moderna
+    navigator.clipboard.writeText(password).then(() => {
+        // Feedback visual para o usuário
+        const originalIcon = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<i class="fas fa-check" style="color: #2ecc71;"></i>';
+        
+        // Retorna o ícone original após 2 segundos
+        setTimeout(() => {
+            copyBtn.innerHTML = originalIcon;
+        }, 2000);
+    });
+});
+
 generateBtn.addEventListener('click', generatePassword);
+
+// Gera uma senha inicial ao carregar a página
+generatePassword();
